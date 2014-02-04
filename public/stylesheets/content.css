@@ -1,0 +1,20 @@
+#content {
+  height: inherit;
+}
+
+.some-stuff-wrapper {
+  height: inherit;
+}
+
+#content-wrapper {
+  height: inherit;
+}
+
+.playlist-wrapper {
+  height: inherit;
+  overflow: auto;
+}
+
+#playlist table {
+  margin-bottom: 0px;
+}

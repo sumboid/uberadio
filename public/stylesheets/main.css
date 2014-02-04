@@ -1,0 +1,18 @@
+html, body {
+  height: 100%;
+}
+      
+body {
+  padding-top: 65px;
+  padding-bottom: 50px;
+}
+
+.spoiler {
+  background-color: #3c3c3c;
+  color: #3c3c3c;
+}
+                
+.spoiler:hover {
+  background: #3c3c3c;
+  color: #888;
+}

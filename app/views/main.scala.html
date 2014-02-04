@@ -1,0 +1,120 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>&Uuml;beradio</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/chat.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/content.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/slider.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+        <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.sizes.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/menu.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/player.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/slider.js")" type="text/javascript"></script>
+
+        <script type="text/javascript" charset="utf-8" src="@routes.Application.chatRoomJs()"></script>
+        <script type="text/javascript" charset="utf-8" src="@routes.Application.playlistJs()"></script>
+    </head>
+ <body>
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header navbar-brand">&Uuml;beradio</div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-left">
+            <li>
+              <button type="button" id='player-button' class="btn btn-primary navbar-btn" data-toggle="button">
+                <span id='player-button-glyph' class="glyphicon glyphicon-play"></span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="full container-fluid" id="content">
+      <div class="col-md-8 some-stuff-wrapper" id="stuff">
+
+        <!-- Navigation tabs -->
+        <ul class="nav nav-tabs" id="stuff-nav">
+          <li class="active">
+            <a href="#playlist" data-toggle="tab">Playlist</a>
+          </li>
+          <li>
+            <a href="#add" data-toggle="tab">Add track</a>
+          </li>
+          <li>
+            <a href="#rec" data-toggle="tab">Record message</a>
+          </li>
+          <li class="visible-xs visible-sm">
+            <a data-toggle="tab"><span class="glyphicon glyphicon-comment"></span></a>
+          </li>
+        </ul>
+
+
+        <!-- Content -->
+        <div class="tab-content" id="content-wrapper">
+          <div class="tab-pane active playlist-wrapper table-responsive scrollable" id="playlist">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Artist</th>
+                  <th>Title</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id='playlist-data'>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane" id="add">
+            
+          </div>
+          <div class="tab-pane" id="rec">
+          
+          </div>
+        </div>
+      </div>
+
+      <div class="hidden-xs hidden-sm col-md-4 some-stuff-wrapper">
+        <div class="panel panel-default chat-wrapper" >
+          <div class="panel-heading" id="chat-heading">
+            <span  class="glyphicon glyphicon-comment"></span>
+            <div class="pull-right chat-settings-button">
+              <button     id="chat-setting"
+                          type="button"
+                          class="btn btn-sm btn-default" 
+                          data-trigger="hover"
+                          data-toggle="popover" 
+                          data-placement="left" 
+                          data-content="And here's some amazing content. It's very engaging. right?">
+                <span class="glyphicon glyphicon-cog"></span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-body" id="chat">
+            <ul class="scrollable" id="chat-messages">
+            </ul>
+          </div>
+          <div class="panel-footer" id="chat-footer" >
+            <input id="talk" type="text" class="form-control input-sm" placeholder="Type your message here">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id='player-wrapper'>
+      <audio id='player' preload='none'>
+        <source src='http://uberadio.tk:8000/uberadio.ogg'>
+      </audio>
+    </div>
+
+    <div class="vimiumReset vimiumHUD" style="right: 150px; opacity: 0; display: none;"></div>
+  </body>
+</html>
