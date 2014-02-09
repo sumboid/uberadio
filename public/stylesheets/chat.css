@@ -25,7 +25,6 @@
   border-bottom: 1px dotted;
 }
 
-.chat-settings-button {
-  position: relative;
-  top: -5px;
+#chat-nickname {
+  margin: -5px;
 }

@@ -41,11 +41,24 @@ $(function() {
         element.scrollTop = element.scrollHeight;
     }
 
+    var changeNickname = function(nick) {
+        nickname = nick
+        $('#chat-nickname input').val(nick)
+        $('#chat-messages').append('<li><div class="header"></div><p>' +
+                                    'Your nickname has been changed to "' + 
+                                    (nick.length == 0 ? 'Anonymous' : nick.replace(/&/g, "&amp;")
+                                                                          .replace(/</g, "&lt;")
+                                                                          .replace(/>/g, "&gt;")
+                                                                          .replace(/"/g, "&quot;")
+                                                                          .replace(/'/g, "&#039;")) + '"' +
+                                    '</p></li>')
+    }
+
     var handleReturnKey = function(e) {
         if(e.charCode == 13 || e.keyCode == 13) {
             e.preventDefault()
             if($("#talk").val().search("/nick") == 0) {
-                nickname = $("#talk").val().slice(5)
+                changeNickname($("#talk").val().slice(5))
                 $("#talk").val('')
             } else {
                 sendMessage()
@@ -60,4 +73,8 @@ $(function() {
     window.setInterval(function(){
         ping()
     }, 10000);
+
+    $('#chat-nickname button').click(function () {
+        changeNickname($('#chat-nickname input').val())
+    })
 })

@@ -37,4 +37,18 @@ object Application extends Controller {
   def playlistJs = Action { implicit request =>
     Ok(views.js.playlist())
   }
+
+  def upload = Action(parse.multipartFormData) { request =>
+    request.body.file("track") map { track =>
+      import java.io.File
+      val filename = track.filename
+      val contentType = track.contentType
+      //track.ref.moveTo(new File(s"/tmp/picture/$filename"))
+      println(filename + ": " + contentType)
+      Ok("File uploaded")
+    } getOrElse {
+      Redirect(routes.Application.index).flashing(
+        "error" -> "Missing file")
+    }
+  }
 }

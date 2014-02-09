@@ -8,6 +8,7 @@ GET     /assets/javascripts/chatroom.js  controllers.Application.chatRoomJs
 GET     /assets/javascripts/playlist.js  controllers.Application.playlistJs
 GET     /chatSocket                      controllers.Application.chatSocket
 GET     /playlistSocket                  controllers.Application.playlistSocket
+POST    /upload                          controllers.Application.upload
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

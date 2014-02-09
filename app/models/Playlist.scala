@@ -1,4 +1,5 @@
 package models
+
 import smpd._
 import akka.actor._
 import scala.concurrent.duration._
