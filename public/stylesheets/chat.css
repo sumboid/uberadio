@@ -27,4 +27,5 @@
 
 #chat-nickname {
   margin: -5px;
+  max-width: 70%;
 }

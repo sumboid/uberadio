@@ -4,7 +4,12 @@ html, body {
       
 body {
   padding-top: 65px;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
+  overflow: hidden;
+}
+
+.navbar-nav li {
+  margin-right: 5px;
 }
 
 .spoiler {
@@ -40,4 +45,15 @@ body {
     font-size: 100%;
     height: 100%;
   }
+}
+
+#play-volume {
+  max-height: 10px;
+}
+
+.slider-selection {
+  background-image: -webkit-gradient(linear, left 0, left 100%, from(#2a9fd6), to(#2a9fd6));
+  background-image: -webkit-linear-gradient(top, #2a9fd6, 0%, #2a9fd6, 100%);
+  background-image: -moz-linear-gradient(top, #2a9fd6 0, #2a9fd6 100%);
+  background-image: linear-gradient(to bottom, #2a9fd6 0, #2a9fd6 100%);
 }
