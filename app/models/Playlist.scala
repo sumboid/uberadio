@@ -70,19 +70,21 @@ object Playlist {
 class Playlist extends Actor {
   val (enumerator, channel) = Concurrent.broadcast[JsValue]
 
-  val mpd = MPD("127.0.0.1", 6600)
-  val idlempd = MPD("127.0.0.1", 6600)
+  val mpd = SmartMPD("127.0.0.1", 6666)
+  val idlempd = SmartMPD("127.0.0.1", 6666)
 
   def mpdListen: Unit = while(true) {
     val idlecmd = Idle(sub.Playlist() :: sub.Player() :: Nil)
-    idlempd.send(idlecmd)
-    idlempd.response(idlecmd) match {
-      case x: ErrorResponse => {}
-      case x: IdleResponse => x.subsystems match {
+    idlempd send idlecmd
+
+    idlempd.response() match {
+      case x: ConnectionErrorResponse => {}
+      case x: ExternalErrorResponse => {}
+      case IdleResponse(x) => x match {
         case Nil => println("I'm dead"); return
-        case x => x foreach {
-          case x: sub.Player => self ! UpdateCurrentSong
-          case x: sub.Playlist => self ! UpdatePlaylist
+        case xs => xs foreach {
+          case s: sub.Player => println("Update current song!"); self ! UpdateCurrentSong
+          case s: sub.Playlist => println("Update playlist!"); self ! UpdatePlaylist
         }
       }
     }
@@ -97,8 +99,9 @@ class Playlist extends Actor {
       val playlistCmd = new PlaylistInfo
       mpd.send(playlistCmd)
 
-      val playlist =  mpd.response(playlistCmd) match {
-        case x: ErrorResponse => println("Something went wrong"); Nil //TODO: Complete this crap
+      val playlist =  mpd.response() match {
+        case x: ConnectionErrorResponse => Nil
+        case x: ExternalErrorResponse => Nil
         case x: PlaylistInfoResponse => x.playlist
       }
 
@@ -107,7 +110,9 @@ class Playlist extends Actor {
 
       val cmd = new CurrentSong
       mpd.send(cmd)
-      val currentSong = mpd.response(cmd) match {
+      val currentSong = mpd.response() match {
+        case x: ConnectionErrorResponse => JsObject(Seq("type" -> JsString("error")))
+        case x: ExternalErrorResponse => JsObject(Seq("type" -> JsString("error")))
         case x: CurrentSongResponse => JsObject(Seq("type" -> JsString("currentsong"),
                                                     "track" -> TrackWrapper(x.track).toJsObject))
       }
@@ -126,24 +131,26 @@ class Playlist extends Actor {
     case UpdateCurrentSong => {
       val cmd = new CurrentSong
       mpd.send(cmd)
-      mpd.response(cmd) match {
+      mpd.response() match {
+        case x: ConnectionErrorResponse => {}
+        case x: ExternalErrorResponse => {}
         case x: CurrentSongResponse => channel.push(JsObject(Seq("type" -> JsString("currentsong"),
                                                                  "track" -> TrackWrapper(x.track).toJsObject)))
-        case x: ErrorResponse => { println("Error?") }
       }
     }
 
     case UpdatePlaylist => { 
       val cmd = new PlaylistInfo
       mpd.send(cmd)
-      mpd.response(cmd) match {
+      mpd.response() match {
         case x: PlaylistInfoResponse => {
           val jsPlaylistData = x.playlist map (TrackWrapper(_).toJsObject)
           val jsPlaylist = JsObject(Seq("type" -> JsString("playlist"), "playlist" -> JsArray(jsPlaylistData)))
           channel.push(jsPlaylist)
           self ! UpdateCurrentSong
         }
-        case x: ErrorResponse => { println("Error") }
+        case x: ConnectionErrorResponse => {}
+        case x: ExternalErrorResponse => {}
       }      
     }
 

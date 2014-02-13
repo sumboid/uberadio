@@ -41,9 +41,18 @@ object Application extends Controller {
   def upload = Action(parse.multipartFormData) { request =>
     request.body.file("track") map { track =>
       import java.io.File
-      val filename = track.filename
-      val contentType = track.contentType
-      //track.ref.moveTo(new File(s"/tmp/picture/$filename"))
+      //val filename = track.filename
+      val filename = System.nanoTime.toString
+      val contentType = track.contentType.getOrElse("none/none")
+
+      val AllowTypes = """(audio/\*|video/ogg)""".r
+
+      contentType.split("/") match {
+        case Array("audio", x) => track.ref.moveTo(new File(s"/mnt/radio/music/$filename." + x)); Player.add(filename + "." + x)
+        case Array("video", "ogg") => track.ref.moveTo(new File(s"/mnt/radio/music/$filename.ogg")); Player.add(filename + ".ogg")
+        case _ => Redirect(routes.Application.index).flashing("error" -> "Missing file")
+      }
+      
       println(filename + ": " + contentType)
       Ok("File uploaded")
     } getOrElse {
