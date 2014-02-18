@@ -38,6 +38,10 @@ object Application extends Controller {
     Ok(views.js.playlist())
   }
 
+  def playerJs = Action { implicit request =>
+    Ok(views.js.player())
+  }
+
   def upload = Action(parse.multipartFormData) { request =>
     request.body.file("track") map { track =>
       import java.io.File
@@ -45,12 +49,12 @@ object Application extends Controller {
       val filename = System.nanoTime.toString
       val contentType = track.contentType.getOrElse("none/none")
 
-      val AllowTypes = """(audio/\*|video/ogg)""".r
-
+      val AllowTypes = """(audio/\*|video/ogg|application/ogg)""".r
       contentType.split("/") match {
         case Array("audio", x) => track.ref.moveTo(new File(s"/mnt/radio/music/$filename." + x)); Player.add(filename + "." + x)
         case Array("video", "ogg") => track.ref.moveTo(new File(s"/mnt/radio/music/$filename.ogg")); Player.add(filename + ".ogg")
-        case _ => Redirect(routes.Application.index).flashing("error" -> "Missing file")
+        case Array("application", "ogg") => track.ref.moveTo(new File(s"/mnt/radio/music/$filename.ogg")); Player.add(filename + ".ogg")
+        case _ => println("eat"); Redirect(routes.Application.index).flashing("error" -> "Missing file")
       }
       
       println(filename + ": " + contentType)

@@ -78,8 +78,6 @@ class Playlist extends Actor {
     idlempd send idlecmd
 
     idlempd.response() match {
-      case x: ConnectionErrorResponse => {}
-      case x: ExternalErrorResponse => {}
       case IdleResponse(x) => x match {
         case Nil => println("I'm dead"); return
         case xs => xs foreach {
@@ -87,6 +85,7 @@ class Playlist extends Actor {
           case s: sub.Playlist => println("Update playlist!"); self ! UpdatePlaylist
         }
       }
+      case _ => {}
     }
   }
 
@@ -100,9 +99,8 @@ class Playlist extends Actor {
       mpd.send(playlistCmd)
 
       val playlist =  mpd.response() match {
-        case x: ConnectionErrorResponse => Nil
-        case x: ExternalErrorResponse => Nil
         case x: PlaylistInfoResponse => x.playlist
+        case _ => Nil
       }
 
       val jsPlaylist = playlist map (TrackWrapper(_).toJsObject)
@@ -111,10 +109,9 @@ class Playlist extends Actor {
       val cmd = new CurrentSong
       mpd.send(cmd)
       val currentSong = mpd.response() match {
-        case x: ConnectionErrorResponse => JsObject(Seq("type" -> JsString("error")))
-        case x: ExternalErrorResponse => JsObject(Seq("type" -> JsString("error")))
         case x: CurrentSongResponse => JsObject(Seq("type" -> JsString("currentsong"),
                                                     "track" -> TrackWrapper(x.track).toJsObject))
+        case _ => JsObject(Seq("type" -> JsString("error")))
       }
 
       val currentSongEnumerator = Enumerator(currentSong)
@@ -132,10 +129,9 @@ class Playlist extends Actor {
       val cmd = new CurrentSong
       mpd.send(cmd)
       mpd.response() match {
-        case x: ConnectionErrorResponse => {}
-        case x: ExternalErrorResponse => {}
         case x: CurrentSongResponse => channel.push(JsObject(Seq("type" -> JsString("currentsong"),
                                                                  "track" -> TrackWrapper(x.track).toJsObject)))
+        case _ => {}
       }
     }
 
@@ -149,8 +145,7 @@ class Playlist extends Actor {
           channel.push(jsPlaylist)
           self ! UpdateCurrentSong
         }
-        case x: ConnectionErrorResponse => {}
-        case x: ExternalErrorResponse => {}
+        case _ => {}
       }      
     }
 
@@ -158,6 +153,7 @@ class Playlist extends Actor {
   }
 
   override def postStop {
+    println("----- STOPPING -----")
     idlempd.send(new NoIdle)
   }
 }

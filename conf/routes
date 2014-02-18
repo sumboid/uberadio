@@ -6,6 +6,7 @@
 GET     /                                controllers.Application.index
 GET     /assets/javascripts/chatroom.js  controllers.Application.chatRoomJs
 GET     /assets/javascripts/playlist.js  controllers.Application.playlistJs
+GET     /assets/javascripts/player.js    controllers.Application.playerJs
 GET     /chatSocket                      controllers.Application.chatSocket
 GET     /playlistSocket                  controllers.Application.playlistSocket
 POST    /upload                          controllers.Application.upload
