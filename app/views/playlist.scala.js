@@ -1,20 +1,19 @@
 @()(implicit r: RequestHeader)
 
-$(function() {
+$(document).ready(function() {
     var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
     var playlistSocket = new WS("@routes.Application.playlistSocket().webSocketURL()")
 
     var ping = function() {
-        playlistSocket.send(JSON.stringify(
-            {
+        playlistSocket.send(JSON.stringify({
                 type: "ping"
             }
         ))
     }
 
+    var pos
     var receiveEvent = function(event) {
         var data = JSON.parse(event.data)
-
         if(data.type == "playlist") {
             var playlist = ""
             $.each(data.playlist, function(ind, val) {
@@ -27,11 +26,12 @@ $(function() {
             })
             $('#playlist-data tr').remove()
             $('#playlist-data').append(playlist)
+            $('#playlist-data tr').eq(pos).addClass('active')
         }
         else if(data.type = "currentsong") {
-            var pos = data.track.position
+            pos = data.id
             $('#playlist-data tr').attr('class', '')
-            $('#playlist-data tr').eq(pos).attr('class', 'active')
+            $('#playlist-data tr').eq(pos).addClass('active')
         }
     }
 

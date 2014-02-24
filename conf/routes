@@ -4,6 +4,11 @@
 
 # Home page
 GET     /                                controllers.Application.index
+GET     /vk-check                        controllers.VKAPI.vkCheck
+GET     /vk-connect                      controllers.VKAPI.vkConnect(code: String ?= "")
+GET     /vk-personal                     controllers.VKAPI.personalTracks(count: Int ?= 50, offset: Int ?= 0)
+GET     /vk-search                       controllers.VKAPI.search(count: Int ?= 50, offset: Int ?= 0, q: String ?= "")
+GET     /vk-add/*id                      controllers.VKAPI.addTrack(id)
 GET     /assets/javascripts/chatroom.js  controllers.Application.chatRoomJs
 GET     /assets/javascripts/playlist.js  controllers.Application.playlistJs
 GET     /assets/javascripts/player.js    controllers.Application.playerJs

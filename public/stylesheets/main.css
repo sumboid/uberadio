@@ -57,3 +57,29 @@ body {
   background-image: -moz-linear-gradient(top, #2a9fd6 0, #2a9fd6 100%);
   background-image: linear-gradient(to bottom, #2a9fd6 0, #2a9fd6 100%);
 }
+
+#vk-modal-body {
+  margin-top: -20px;
+  margin-bottom: -35px;
+  margin-left: -5px;
+  margin-right: -35px;
+}
+
+#vk-modal-content {
+  width: 100%;
+  height: 500px;
+}
+
+.modal-dialog {
+  width: 70%;
+  height: 90%;
+}
+
+.scrollable {
+  height: inherit;
+  overflow: auto;
+}
+
+#vk-search {
+    max-width: 60%
+}
