@@ -110,7 +110,7 @@ class Player extends Actor {
         mpd send new PlaylistInfo
         mpd response() match {
           case PlaylistInfoResponse(tracks) => {
-            val id = tracks.filter( _.file.split("://", 2)(0) == "http" ).last.id
+            val id = tracks.last.id
             sender ! Messages.TrackID(id)
           }
         }
