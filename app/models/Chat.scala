@@ -66,7 +66,7 @@ case class Message(name: String, text: String, time: String) {
     case x: String => x
   }
 
-  val _text = replaceMark(replaceSpecSymbols(text)).trim
+  val _text = replaceSpecSymbols(text).trim
 
   def get = JsObject(
                   Seq(
@@ -83,7 +83,9 @@ object History {
   var history = List[Message]()
 
   def add(msg: Message) {
+    println("Add: " + msg)
     history = history :+ msg
+    println("Message added")
     if(history.size >= 10) {
       history = history.tail
     }
@@ -124,13 +126,15 @@ class ChatRoom extends Actor {
   }
   
   def notifyAll(id: String, text: String) {
+    println("Start notify")
     val today = Calendar.getInstance.getTime
     val curTimeFormat = new SimpleDateFormat("HH:mm:ss")
     val time = curTimeFormat.format(today).toString
-
+    println("Creating message")
     val msg = Message(id, text, time)
-
+    println("Message created")
     if(!msg.empty) {
+      println("Pusing to channel: " + text)
       chatChannel.push(msg.get)
       History.add(msg)
     }

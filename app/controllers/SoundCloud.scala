@@ -26,6 +26,7 @@ object SoundCloudAPI extends Controller {
         
     response match {
       case Some(x) => {
+        println(s"$apiURL/tracks/$id.json?client_id=$clientID")
         val json = Json.parse(x.mkString)
         val url = (json \ "stream_url").as[String] + s"?client_id=$clientID"
         val title = (json \ "title").as[String]
@@ -41,7 +42,7 @@ object SoundCloudAPI extends Controller {
   def search(count: Int, offset: Int, q: String) = Action { implicit request => Ok("")
     val response = try {
       println(s"$apiURL/tracks.json?client_id=$clientID&duration[from]=0&duration[to]=600000&filter=streamable&q=$q&limit=$count&offset=$offset")
-      Some(Source.fromURL(s"$apiURL/tracks.json?client_id=$clientID&duration[from]=0&duration[to]=600000&filter=streamable&q=$q&limit=$count&offset=$offset"))
+      Some(Source.fromURL(s"$apiURL/tracks.json?client_id=$clientID&duration[from]=0&duration[to]=600000&filter[streamable]&q=$q&limit=$count&offset=$offset"))
     } catch {
       case _ => None
     }
@@ -50,7 +51,7 @@ object SoundCloudAPI extends Controller {
       case Some(x) => {
         val json = Json.parse(x.mkString)
         Ok(x.mkString)
-        val output = json.as[Seq[JsObject]]map { x =>
+        val output = json.as[Seq[JsObject]] filter { x => (x \ "streamable").as[Boolean] } map { x =>
           Json.obj(
             "id" -> (x \ "id").as[Int],
             "title" -> (x \ "title").as[String],
